@@ -1,0 +1,18 @@
+---
+- name: Install 7zip on Linux
+  hosts: UMTRI
+  become: yes  # Run with sudo privileges
+  
+  tasks:
+    - name: Install p7zip on Debian/Ubuntu
+      apt:
+        name: p7zip-full
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install p7zip on RedHat/CentOS
+      yum:
+        name: p7zip
+        state: present
+      when: ansible_os_family == "RedHat"
