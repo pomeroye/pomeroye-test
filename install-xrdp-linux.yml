@@ -1,6 +1,6 @@
 ---
 - name: Install nmap on Ubuntu
-  hosts: UMTRI
+  hosts: 141.211.92.253
   become: yes  # This enables sudo privileges
   
   tasks:
