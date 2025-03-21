@@ -3,6 +3,7 @@
   hosts: all
   become: yes  # Run with sudo privileges
 
+  tasks:
     - name: Install XRDP package
       apt:
         name: xrdp
