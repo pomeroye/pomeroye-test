@@ -1,31 +1,27 @@
 ---
-- name: Install and configure XRDP on Ubuntu/Debian
+- name: Install nmap on Ubuntu
   hosts: all
   become: yes  # Run with sudo privileges
 
   tasks:
-    - name: Install XRDP package
+    - name: Update APT package cache
       apt:
-        name: xrdp
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install nmap package
+      apt:
+        name: nmap
         state: present
       when: ansible_os_family == "Debian"
-    
-    - name: Ensure XRDP service is started and enabled
-      service:
-        name: xrdp
-        state: started
-        enabled: yes
+
+    - name: Verify nmap installation (optional)
+      command: nmap --version
+      register: nmap_version
+      changed_when: false  # This task doesn't change the system state
       when: ansible_os_family == "Debian"
 
-    - name: Ensure XRDP-sesman service is started and enabled
-      service:
-        name: xrdp-sesman
-        state: started
-        enabled: yes
-      when: ansible_os_family == "Debian"
-
-    - name: Restart XRDP service to apply changes
-      service:
-        name: xrdp
-        state: restarted
-      when: ansible_os_family == "Debian"
+    - name: Display nmap version (optional)
+      debug:
+        msg: "Installed nmap version: {{ nmap_version.stdout }}"
+      when: ansible_os_family == "Debian" and nmap_version is defined
