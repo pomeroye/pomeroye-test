@@ -3,12 +3,6 @@
   hosts: all
   become: yes  # Run with sudo privileges
 
-  tasks:
-    - name: Update package cache (Debian/Ubuntu)
-      apt:
-        update_cache: yes
-      when: ansible_os_family == "Debian"
-
     - name: Install XRDP package
       apt:
         name: xrdp
