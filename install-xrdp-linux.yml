@@ -2,23 +2,45 @@
 - name: Install nmap on Ubuntu
   hosts: all
   become: yes  # Run with sudo privileges
+  become_user: pomeroye
+  become_method: sudo
 
   tasks:
+    - name: Remove APT lock files if they exist
+      shell: rm -f /var/lib/dpkg/lock-frontend /var/lib/apt/lists/lock /var/cache/apt/archives/lock
+      args:
+        warn: no  # Suppress shell warning
+      when: ansible_os_family == "Debian"
+      ignore_errors: yes  # Continue even if this fails
+
+    - name: Reconfigure dpkg to fix any broken state
+      shell: dpkg --configure -a
+      when: ansible_os_family == "Debian"
+      ignore_errors: yes
+
     - name: Update APT package cache
       apt:
         update_cache: yes
       when: ansible_os_family == "Debian"
+      retries: 5
+      delay: 10
+      register: apt_update_result
+      until: apt_update_result is success
 
     - name: Install nmap package
       apt:
         name: nmap
         state: present
       when: ansible_os_family == "Debian"
+      retries: 5
+      delay: 10
+      register: apt_install_result
+      until: apt_install_result is success
 
     - name: Verify nmap installation (optional)
       command: nmap --version
       register: nmap_version
-      changed_when: false  # This task doesn't change the system state
+      changed_when: false
       when: ansible_os_family == "Debian"
 
     - name: Display nmap version (optional)
