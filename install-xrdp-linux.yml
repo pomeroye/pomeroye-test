@@ -14,21 +14,7 @@
         name: xrdp
         state: present
       when: ansible_os_family == "Debian"
-
-    - name: Install Xfce desktop environment (optional, for GUI)
-      apt:
-        name: xfce4
-        state: present
-      when: ansible_os_family == "Debian"
-
-    - name: Configure XRDP to use Xfce (if installed)
-      lineinfile:
-        path: /etc/xrdp/startwm.sh
-        regexp: '^#?(startxfce4|startwm)'
-        line: 'startxfce4'
-        state: present
-      when: ansible_os_family == "Debian"
-
+    
     - name: Ensure XRDP service is started and enabled
       service:
         name: xrdp
