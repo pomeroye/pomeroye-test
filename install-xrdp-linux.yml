@@ -1,0 +1,57 @@
+---
+- name: Install and configure XRDP on Ubuntu/Debian
+  hosts: all
+  become: yes  # Run with sudo privileges
+
+  tasks:
+    - name: Update package cache (Debian/Ubuntu)
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install XRDP package
+      apt:
+        name: xrdp
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Install Xfce desktop environment (optional, for GUI)
+      apt:
+        name: xfce4
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Configure XRDP to use Xfce (if installed)
+      lineinfile:
+        path: /etc/xrdp/startwm.sh
+        regexp: '^#?(startxfce4|startwm)'
+        line: 'startxfce4'
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Ensure XRDP service is started and enabled
+      service:
+        name: xrdp
+        state: started
+        enabled: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Ensure XRDP-sesman service is started and enabled
+      service:
+        name: xrdp-sesman
+        state: started
+        enabled: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Allow RDP port (3389) through UFW
+      ufw:
+        rule: allow
+        port: 3389
+        proto: tcp
+      when: ansible_os_family == "Debian"
+
+    - name: Restart XRDP service to apply changes
+      service:
+        name: xrdp
+        state: restarted
+      when: ansible_os_family == "Debian"
