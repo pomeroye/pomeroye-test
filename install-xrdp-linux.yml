@@ -1,16 +1,15 @@
 ---
 - name: Install nmap on Ubuntu
   hosts: localhost
-  become: yes  # Run with sudo privileges
-
+  become: yes  # This enables sudo privileges
+  
   tasks:
-    - name: Update APT package cache
+    - name: Update apt cache
       apt:
         update_cache: yes
-      when: ansible_os_family == "Debian"
+      changed_when: false
 
-    - name: Install nmap package
+    - name: Install nmap
       apt:
         name: nmap
         state: present
-      when: ansible_os_family == "Debian"
