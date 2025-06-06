@@ -1,0 +1,20 @@
+---
+- name: Install xrdp on Ubuntu
+  hosts: all
+  become: true
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install xrdp
+      apt:
+        name: xrdp
+        state: present
+
+    - name: Ensure xrdp is running and enabled
+      systemd:
+        name: xrdp
+        enabled: yes
+        state: started
