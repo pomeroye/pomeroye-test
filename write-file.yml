@@ -6,5 +6,5 @@
     - name: Write file test.txt to temp directory
       ansible.builtin.lineinfile:
         path: /tmp/test.txt
-        line: just a quick simple test
+        line: just a quick simple test 123
         create: true
