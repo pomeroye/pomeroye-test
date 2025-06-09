@@ -1,7 +1,7 @@
 ---
 - name: Write a simple file
   hosts: all
-  gather_facts: false
+  gather_facts: true
   tasks:
     - name: Write file test.txt to temp directory
       ansible.builtin.lineinfile:
